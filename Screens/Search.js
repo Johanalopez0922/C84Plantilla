@@ -29,6 +29,7 @@ export default class SearchScreen extends Component {
         snapshot.docs.map(doc => {
           this.setState({
             allTransactions: [...this.state.allTransactions, doc.data()],
+            lastVisibleTransaction: doc
           });
         });
       });
@@ -56,7 +57,7 @@ export default class SearchScreen extends Component {
               {`${item.book_name} ( ${item.book_id} )`}
             </ListItem.Title>
             <ListItem.Subtitle style={styles.subtitle}>
-              {`This book ${transactionType} by ${item.student_name}`}
+              {`Este libro fue ${transactionType} por ${item.student_name}`}
             </ListItem.Subtitle>
             <View style={styles.lowerLeftContaiiner}>
               <View style={styles.transactionContainer}>
@@ -93,11 +94,17 @@ export default class SearchScreen extends Component {
       </View>
     );
   };
-//completa la función handleSearch()
-  //handleSearch = async text => {
-    
+  handleSearch = async text => {
+    var enteredText = text.toUpperCase().split("");
+    text = text.toUpperCase();
+    this.setState({
+      allTransactions: []
+    });
+    if (!text) {
+      this.getTransactions();
+    }
 
-    /*if (enteredText[0] === "B") {
+    if (enteredText[0] === "B") {
       db.collection("transactions")
         .where("book_id", "==", text)
         .get()
@@ -105,10 +112,24 @@ export default class SearchScreen extends Component {
           snapshot.docs.map(doc => {
             this.setState({
               allTransactions: [...this.state.allTransactions, doc.data()],
+              lastVisibleTransaction: doc
             });
           });
         });
-    } */
+    } else if (enteredText[0] === "S") {
+      db.collection("transactions")
+        .where("student_id", "==", text)
+        .get()
+        .then(snapshot => {
+          snapshot.docs.map(doc => {
+            this.setState({
+              allTransactions: [...this.state.allTransactions, doc.data()],
+              lastVisibleTransaction: doc
+            });
+          });
+        });
+    }
+  };
     
   
   render() {
@@ -125,6 +146,7 @@ export default class SearchScreen extends Component {
             />
             <TouchableOpacity
               style={styles.scanbutton}
+              onPress={() => this.handleSearch(searchText)}
             >
               <Text style={styles.scanbuttonText}>Buscar</Text>
             </TouchableOpacity>

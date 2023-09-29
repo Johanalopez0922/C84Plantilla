@@ -22,7 +22,6 @@ export default class BottomTabNavigator extends Component {
               } else if (route.name === "Buscar") {
                 iconName = "search";
               }
-
               return <Ionicons name={iconName} size={size} color={color} />;
             },
           })}
